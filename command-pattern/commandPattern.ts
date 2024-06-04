@@ -1,47 +1,64 @@
-interface SkillCommand {
+// Step 1: Defining the Command interface
+interface Command {
   execute(): void;
 }
 
-class Poison implements SkillCommand {
-  execute(): void {
-    console.log("Poison your enemy");
+// Step 2: Creating the Receiver
+class Light {
+  public turnOn() {
+    console.log("Light is on");
+  }
+
+  public turnOff() {
+    console.log("Light is off");
   }
 }
 
-class Bless implements SkillCommand {
-  execute(): void {
-    console.log("Bless yourself");
+// Step 3: Creating Commands
+class LightOnCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  public execute() {
+    this.light.turnOn();
   }
 }
 
-class Attack implements SkillCommand {
-  execute(): void {
-    console.log("Attack your enemy");
+class LightOffCommand implements Command {
+  private light: Light;
+
+  constructor(light: Light) {
+    this.light = light;
+  }
+
+  public execute() {
+    this.light.turnOff();
   }
 }
 
-class UserAction {
-  private combo: SkillCommand[] = [];
+// Step 4: Creating the Invoker
+class Switch {
+  private command: Command;
 
-  setSkill(skill: SkillCommand): void {
-    this.combo.push(skill);
+  constructor(command: Command) {
+    this.command = command;
   }
 
-  useCombo(): void {
-    for (const skillCommand of this.combo) {
-      skillCommand.execute();
-    }
+  public press() {
+    this.command.execute();
   }
 }
 
-// Simulate main method
-function main(): void {
-  const userAction = new UserAction();
-  userAction.setSkill(new Poison());
-  userAction.setSkill(new Bless());
-  userAction.setSkill(new Attack());
-  userAction.useCombo();
-}
+// Using the Command Design Pattern
+let light: Light = new Light();
+let lightOnCommand: Command = new LightOnCommand(light);
+let lightOffCommand: Command = new LightOffCommand(light);
 
-// Run the program
-main();
+let switchOn: Switch = new Switch(lightOnCommand);
+let switchOff: Switch = new Switch(lightOffCommand);
+
+switchOn.press();
+switchOff.press();
